@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base{
+    .navbar-item{
+        @apply col-span-1 px-2 py-4 hover:bg-teal-800
+        transition-all text-center text-sm
+    }
+}
