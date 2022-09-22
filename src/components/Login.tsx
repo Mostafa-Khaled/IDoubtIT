@@ -1,6 +1,5 @@
 import React, { ChangeEvent, FormEvent } from 'react'
-import Navbar from './Navbar'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 interface IProps{
     loginUser:  React.Dispatch<React.SetStateAction<string>>
@@ -42,9 +41,12 @@ const Login : React.FC<IProps> = (props : IProps) => {
         console.log(err);
     })
   }
+  useEffect(()=>{
+    if(isLogged) navigate("/");
+  },[])
   return (
-    <div>
-        <Navbar isLogged = { isLogged } logout={setLogged}/>
+    <div className={isLogged ? "hidden" : ""}>
+        {/* <Navbar isLogged = { isLogged } logout={ setLogged }/> */}
         <h1 className="text-3xl font-bold max-w-xl mx-auto text-center m-t-2 p-2"> Login </h1>
         <div className="container max-w-xl mx-auto flex justfiy-center my-5 border border-gray-500 p-10 rounded-md">
             <form className="w-full max-w-lg" action="POST" onSubmit={(e)=>{onSubmit(e)}}>

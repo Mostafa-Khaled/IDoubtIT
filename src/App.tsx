@@ -4,20 +4,29 @@ import './index.css';
 import Dashboard from './components/Dashboard'
 import Login from './components/Login'
 import Register from './components/Register'
+import Navbar from './components/Navbar'
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 
 
 const App = () => {
-    const [user, setUser] = useState<string>("");
+    const userID: string = localStorage.getItem("__ID") || ""; 
+    const [user, setUser] = useState<string>(userID);
+    const [isLogged, setLogged] = useState<boolean>((userID !== "")&&(userID !== undefined));
+    const updateUserState = (_ID : string) =>{
+      setUser(_ID);
+      if(_ID) setLogged(true);
+    }
     return (
       <Router>
-        <div className="container flex">
+        <Navbar isLogged={isLogged} logout={setLogged}/>
+        <div className="">
             <Routes>
                 <Route path="/" element = {<Dashboard />} />
                 <Route path="/logout" element = {<Navigate to="/" />} />
-                <Route path="/register" element = {<Register />} />
-                <Route path="/login" element = {<Login loginUser={setUser}/>} />
+                <Route path="/register" element = {<Register isLogged={isLogged}/>} />
+                <Route path="/login" element = {<Login loginUser={updateUserState}/>} />
+                <Route path="/me" element = {<></>} />
             </Routes>
         </div>
       </Router>

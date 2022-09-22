@@ -1,8 +1,12 @@
 import React, { ChangeEvent, FormEvent } from 'react'
-import Navbar from './Navbar'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+interface IProps{
+  isLogged : boolean
+}
 
-const Register : React.FC = () => {
+const Register : React.FC<IProps> = (props : IProps) => {
+  const navigate = useNavigate();   
   const [fname, setFName] = useState<string>(""); 
   const [lname, setLName] = useState<string>(""); 
   const [mail, setMail] = useState<string>(""); 
@@ -36,11 +40,15 @@ const Register : React.FC = () => {
         email : mail,
         password : pass
       })
+    }).then(()=>{
+      navigate("/")
     })
   }
+  useEffect(()=>{
+    if(props.isLogged) navigate("/");
+  },[])
   return (
-    <div>
-        <Navbar />
+    <div className={props.isLogged ? "hidden" : ""}>
         <h1 className="text-3xl font-bold max-w-xl mx-auto text-center m-t-2 p-2"> Register </h1>
         <div className="container max-w-xl mx-auto flex justfiy-center my-5 border border-gray-500 p-10 rounded-md">
             <form className="w-full max-w-lg" action="POST" onSubmit={(e)=>{onSubmit(e)}}>
