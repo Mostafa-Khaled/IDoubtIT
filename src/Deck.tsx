@@ -3,7 +3,7 @@ import Card from './Card'
 import { useState, useEffect } from 'react'
 
 interface IProps{
-
+  size ?: number
 }
 
 interface Position{
@@ -33,6 +33,7 @@ const Deck = (props: IProps) => {
     if(active !== idx){
       deckClone[idx].currPosition.y += shiftVal
     }
+    console.log("clicked!!")
     setActive(active === idx ? -1 : idx)
     setDeck(deckClone)
   }
@@ -53,9 +54,10 @@ const Deck = (props: IProps) => {
   }
   useEffect(()=>{
     const arr = [];
-    const kinds: string[] = ["heart", "club", "diamond", "spade"]
-    const ranks: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "king", "jack", "queen"]
-    for(let i = 0; i < 30; i++){
+    const len = props.size | 52;
+    const kinds: string[] = ["H", "C", "D", "S"]
+    const ranks: string[] = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "K", "J", "Q"]
+    for(let i = 0; i < len; i++){
       const card: ICard = {
         kind: kinds[~~(Math.random() * kinds.length)],
         rank: ranks[~~(Math.random() * ranks.length)],
@@ -68,7 +70,7 @@ const Deck = (props: IProps) => {
           y: 50
         },
         id: '',
-        backed: true,
+        backed: false,
         color: "black"
       }
       card.id = !card.backed ? `${card.kind}_${card.rank}_${i}` : `back_${i}`
@@ -78,24 +80,35 @@ const Deck = (props: IProps) => {
   },[])
   return (
     <div>
-      <div className='hidden'>
+      <div className=''>
       { 
-          deck.map( (card: ICard) => 
+          deck.map( (card: ICard, idx: number) => 
           <Card id={card.id} backed={card.backed} color={card.color}
           position={deck[0].position} currPosition={card.currPosition}
-           kind={card.kind} rank={card.rank} /> )
+           kind={card.kind} rank={card.rank} 
+           clickHandle={handleClick}
+           dbHandle={handDoubleClick}
+           key={card.id} idx={idx}
+           style_={
+            {
+              "top": deck[0].position.x,
+              "left": deck[0].position.y,
+              "transform": `rotateX(70deg) rotateY(0deg) rotateZ(-20deg) translateZ(-${200-idx*3}px) ${(active === idx ? "translateY(50px)" : "")}`
+            }
+          }
+          classNames = {`absolute transition-all duration-500 ease-in-out`}
+            /> )
       }
       </div>
-      <svg width="600" height="700">
+      {/*<svg width="600" height="700">
       {
           deck.map((card: ICard, idx: number)=>
           <use xlinkHref={`#${card.id}`} onClick={e=>handleClick(e, idx)}
           onDoubleClick={e=>handDoubleClick(e, idx)}
-          style={{"transform": `rotateX(70deg) rotateY(0deg) rotateZ(-20deg) translateZ(-${200-idx*3}px) ${(active === idx ? "translateY(50px)" : "")}`}}
-          className={"transition-all duration-500	ease-in-out "}/>
+          />
          )
       }
-      </svg>
+    </svg>*/}
     </div>
   )
 }
