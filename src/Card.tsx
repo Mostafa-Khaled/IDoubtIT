@@ -1,12 +1,12 @@
 //import { eventNames } from 'process'
 import React from 'react'
 import Icons from './test.svg'
+import {useEffect, useState} from 'react'
 
 //import { useState } from 'react'
 
 function importAll(r) {
   let images = {};
-  console.log(r)
   r.keys().map(item => { images[item.replace('./', '')] = r(item); });
   return images;
 }
@@ -25,15 +25,27 @@ interface IProps{
   position: Position,
   backed: boolean,
   currPosition: Position
-  style_: Object
-  color?: string
+  style_: object
+  active: number
   idx: number
   classNames: string,
+  animation: string,
   clickHandle: (event: React.MouseEvent, idx: number) => void
   dbHandle: (event: React.MouseEvent, idx: number) => void
 }
 
 const Card = (props: IProps) => {
+  const [style_, setStyle] = useState<object>(
+    { ...props.style_, "transform" : `rotateX(70deg) rotateY(0deg) rotateZ(-20deg) translateZ(-${200-props.idx*3}px)` }
+  );
+  const [zIdx, setIdx] = useState<number>(props.idx);
+  useEffect(() => {
+    const transActive = `rotateX(70deg) rotateY(0deg) rotateZ(-20deg) translateZ(-${200-props.idx*3}px) ${(props.active === props.idx ? "translateY(50px)" : "")}`;
+    setStyle({...props.style_, "transform" : props.animation === "" ? transActive : props.animation});
+  },[props.active, props.animation])
+  useEffect(()=>{
+    setIdx(props.idx);
+  },[props.idx])
   return (
       /*<svg className={`icon icon-back`} width={"600"} height={"400"}>
         <g id={props.id}>
@@ -41,9 +53,19 @@ const Card = (props: IProps) => {
           x={props.position.x} y={props.position.y}/>
         </g>
       </svg>*/
-      <img onClick={(e) => props.clickHandle(e, props.idx)} 
-      onDoubleClick={(e) => props.dbHandle(e, props.idx)}
-      className={props.classNames} style={props.style_} src={props.backed ? images["BACK.png"] : images[`${props.rank}-${props.kind}.png`]}/>
+      <div className="outer" style={{"top": "50px", "left":"50px", "zIndex" : zIdx}}>
+        <div  className="inner relative"
+              onClick={(e) => props.clickHandle(e, props.idx)} 
+              onDoubleClick={(e) => props.dbHandle(e, props.idx)}>
+          <div className="back absolute">
+          <img className={props.classNames} style={style_} 
+          src={images[`${props.rank}-${props.kind}.png`]}/>
+          </div>
+          <div className="front absolute">
+          <img className={props.classNames} style={style_} src={images["BACK.png"]}/>
+          </div>
+        </div>
+      </div>    
   )
 }
 
