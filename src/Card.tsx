@@ -1,72 +1,62 @@
-//import { eventNames } from 'process'
 import React from 'react'
-import Icons from './test.svg'
 import {useEffect, useState} from 'react'
-
-//import { useState } from 'react'
-
 function importAll(r) {
   let images = {};
-  r.keys().map(item => { images[item.replace('./', '')] = r(item); });
+  r.keys().forEach(item => { images[item.replace('./', '')] = r(item); });
   return images;
 }
 
 const images = importAll(require.context('./Cards', false, /\.(png|svg)$/));
 
-interface Position{
+enum Type{
+  Deck,
+  Player,
+  Table_Played,
+  Table_Revealed
+}
+
+interface IPosition{
   x: number,
   y: number
 }
 
-interface IProps{
+interface ICard{
   id: string
   kind: string,
   rank: string,
-  position: Position,
+  position: IPosition,
   backed: boolean,
-  currPosition: Position
-  style_: object
-  active: number
-  idx: number
-  classNames: string,
-  animation: string,
-  clickHandle: (event: React.MouseEvent, idx: number) => void
-  dbHandle: (event: React.MouseEvent, idx: number) => void
+  type: Type,
+  selected: boolean,
+  round?: number,
+  playerID?: string
+  show?: boolean
+  zIndex?: number
+}
+
+interface IProps extends ICard{
 }
 
 const Card = (props: IProps) => {
-  const [style_, setStyle] = useState<object>(
-    { ...props.style_, "transform" : `rotateX(70deg) rotateY(0deg) rotateZ(-20deg) translateZ(-${200-props.idx*3}px)` }
-  );
-  const [zIdx, setIdx] = useState<number>(props.idx);
-  useEffect(() => {
-    const transActive = `rotateX(70deg) rotateY(0deg) rotateZ(-20deg) translateZ(-${200-props.idx*3}px) ${(props.active === props.idx ? "translateY(50px)" : "")}`;
-    setStyle({...props.style_, "transform" : props.animation === "" ? transActive : props.animation});
-  },[props.active, props.animation])
+  const [show, setShow] = useState<boolean>(false);
   useEffect(()=>{
-    setIdx(props.idx);
-  },[props.idx])
+    setShow(props.show);
+  },[props.show])
+  const imgSrc = props.rank + '-' + props.kind[0] + '.png'
+  const img = props.backed ? images["BACK.png"] : images[imgSrc]
+  const imgInv = !props.backed ? images["BACK.png"] : images[imgSrc]
   return (
-      /*<svg className={`icon icon-back`} width={"600"} height={"400"}>
-        <g id={props.id}>
-          <use fill={props.color || "black"} xlinkHref={!props.backed ? `${Icons}#${props.kind}_${props.rank}` : `${Icons}#back`} 
-          x={props.position.x} y={props.position.y}/>
-        </g>
-      </svg>*/
-      <div className="outer" style={{"top": "50px", "left":"50px", "zIndex" : zIdx}}>
-        <div  className="inner relative"
-              onClick={(e) => props.clickHandle(e, props.idx)} 
-              onDoubleClick={(e) => props.dbHandle(e, props.idx)}>
-          <div className="back absolute">
-          <img className={props.classNames} style={style_} 
-          src={images[`${props.rank}-${props.kind}.png`]}/>
-          </div>
-          <div className="front absolute">
-          <img className={props.classNames} style={style_} src={images["BACK.png"]}/>
-          </div>
+      <div style={{"zIndex" : props.zIndex || 0}} className = {`card m-0 relative ${show ? "show": ""} ${props.selected ? '-translate-y-2' : ''}`}> 
+        <div className = "front m-0"> 
+          <img className="w-full h-full" alt="card" src={img} />
         </div>
-      </div>    
+        <div className = "back m-0 absolute top-0 left-0 w-full h-full rotate-y-180 opacity-0">
+          <img className="w-full h-full" alt="card" src={imgInv} />
+        </div>
+      </div>
   )
 }
 
 export default Card
+
+export { ICard, Type } 

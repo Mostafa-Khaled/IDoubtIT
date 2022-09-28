@@ -1,4 +1,4 @@
-/*import React from "react";
+import React from "react";
 import Card from "./Card";
 import { useState, useEffect } from "react";
 
@@ -192,4 +192,4 @@ const Deck = (props: IProps) => {
   );
 };
 
-export default Deck;*/
+export default Deck;
