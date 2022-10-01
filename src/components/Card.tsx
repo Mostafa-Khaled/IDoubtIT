@@ -1,12 +1,13 @@
 import React from 'react'
 import {useEffect, useState} from 'react'
+
 function importAll(r) {
   let images = {};
   r.keys().forEach(item => { images[item.replace('./', '')] = r(item); });
   return images;
 }
 
-const images = importAll(require.context('./Cards', false, /\.(png|svg)$/));
+const images = importAll(require.context('../cards', false, /\.(png|svg)$/));
 
 enum Type{
   Deck,
@@ -15,16 +16,11 @@ enum Type{
   Table_Revealed
 }
 
-interface IPosition{
-  x: number,
-  y: number
-}
 
 interface ICard{
   id: string
   kind: string,
   rank: string,
-  position: IPosition,
   backed: boolean,
   type: Type,
   selected: boolean,
@@ -42,11 +38,13 @@ const Card = (props: IProps) => {
   useEffect(()=>{
     setShow(props.show);
   },[props.show])
+
   const imgSrc = props.rank + '-' + props.kind[0] + '.png'
   const img = props.backed ? images["BACK.png"] : images[imgSrc]
   const imgInv = !props.backed ? images["BACK.png"] : images[imgSrc]
+
   return (
-      <div style={{"zIndex" : props.zIndex || 0}} className = {`card m-0 relative ${show ? "show": ""} ${props.selected ? '-translate-y-2' : ''}`}> 
+      <div style={{"zIndex" : props.zIndex || 0}} className = {`card-made m-0 relative ${show ? "show": ""} ${props.selected ? '-translate-y-2' : ''}`}> 
         <div className = "front m-0"> 
           <img className="w-full h-full" alt="card" src={img} />
         </div>

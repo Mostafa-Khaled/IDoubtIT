@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import Card, { ICard } from './Card'
 import { useEffect, useState } from 'react'
 
 interface IProps {
 	id: string
 	cards: ICard[],
+	idx: number,
 	selectCards: any
 }
 
 
 const Player = (props: IProps) => {
+	// Dimensions
+
+	const dim = {w: 667 - 50 , h: 375 - 50}
+
 	// States 
 	const [cards, setCards] = useState<ICard[]>([]); 
 	const [selectedCards, setSelectedCards] = useState<ICard[]>([]);
@@ -24,16 +29,9 @@ const Player = (props: IProps) => {
 		})
 		setCards(cards_);
 		setSelectedCards([]);
-	}, [props.cards]);
+	}, [props.cards, props.id]);
 
 	// Methods
-	/*const playCard = (event: React.MouseEvent, card: ICard) : void => {
-		setCards(cards.filter(el =>{
-			console.log(el.id === card.id);
-			return el.id !== card.id
-		}));
-		props.playCard(event, card);
-	}*/
 
 	const selectCard = (event: React.MouseEvent, card: ICard) : void => {
 		if(props.id !== localStorage.getItem("p_id")) return;
@@ -62,18 +60,24 @@ const Player = (props: IProps) => {
 		} 
 	}
 
+	const width : CSSProperties = { width: `${( props.idx % 2 === 0 ? dim.w : dim.h)}px` }
+	const dist = ((props.idx%2 === 0 ? dim.w : dim.h)-48)/(cards.length+1);
 	// Render 
 
 	return (
-		<div className = "player basis-full">
+		<div className = "player basis-full" style={width}>
 			<div className = "player-profile">
 				
 			</div>
-			<div className = "cards relative h-20 flex flex-row">
+			<div className = "cards h-20 relative" style={width}>
 				{
 					cards.map((card: ICard, idx: number)=>{
-						return <div key={card.id} className="" style={{"flexBasis" : 100/cards.length+"%"}} onClick={(e)=>selectCard(e, card)}>
-							 <Card id={card.id} rank={card.rank} position={card.position} backed={localStorage.getItem("p_id") !== props.id} type={card.type} kind={card.kind} selected={card.selected}/> 
+						const style_ : CSSProperties = { transform : `translateX(${(idx+1)*dist}px)`, position: "absolute"};
+						return <div key={card.id} className="" 
+						// style={{"flexBasis" : 100/cards.length+"%"}}
+						style={style_} 
+						onClick={(e)=>selectCard(e, card)}>
+							 <Card id={card.id} rank={card.rank} backed={localStorage.getItem("p_id") !== props.id} type={card.type} kind={card.kind} selected={card.selected}/> 
 						</div>
 					})
 				}
