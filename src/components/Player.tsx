@@ -23,7 +23,6 @@ const Player = (props: IProps) => {
 	useEffect(() => {
 		const cards_ = props.cards.map((card: ICard) => {
 			const card_ = {...card};
-			card_.id += "_"+props.id;
 			card_.playerID = props.id;
 			return card_; 
 		})
@@ -34,7 +33,7 @@ const Player = (props: IProps) => {
 	// Methods
 
 	const selectCard = (event: React.MouseEvent, card: ICard) : void => {
-		if(props.id !== localStorage.getItem("p_id")) return;
+		if(props.id !== sessionStorage.getItem("p_id")) return;
 		let found = false;
 		for(let card_ of selectedCards){
 			if(card_.id === card.id){
@@ -77,7 +76,7 @@ const Player = (props: IProps) => {
 						// style={{"flexBasis" : 100/cards.length+"%"}}
 						style={style_} 
 						onClick={(e)=>selectCard(e, card)}>
-							 <Card id={card.id} rank={card.rank} backed={localStorage.getItem("p_id") !== props.id} type={card.type} kind={card.kind} selected={card.selected}/> 
+							 <Card id={card.id} rank={card.rank} backed={sessionStorage.getItem("p_id") !== props.id} type={card.type} kind={card.kind} selected={card.selected}/> 
 						</div>
 					})
 				}

@@ -1,27 +1,35 @@
 import React from 'react'
 //import db, { checkAvailableRoom } from '../firebase/methods'
 //import { doc, getDoc, setDoc } from 'firebase/firestore'
+
+import { doc, setDoc } from "firebase/firestore"; 
+import { useDocumentData } from 'react-firebase-hooks/firestore'
+import db from '../firebase/methods'
+
+
 import { useEffect, useState } from 'react'
 
 import uid from '../functions/uid'
-
+import { initializeDecks } from '../functions/functions'
 interface IProps{
 
 }
 
 const Test = (props : IProps) => {
   //const isRoomAvailable = checkAvailableRoom("mk71nNSE").then(res => console.log(res));
+const docRef = doc(db, "doubt", "3xU0E8")
 
-  const [x, setX] = useState<string>("");
+const [playersData, loading, error] = useDocumentData(docRef) ;
 
-  const generateUID = () => {
-    const w = uid().then(res => setX(res));
+useEffect(()=>{
+  if(!loading && playersData){
+    setDoc(doc(db, "doubt", "aaa"), playersData)
   }
+},[playersData])  
 
 	return ( 
 		<div className="w-screen h-screen bg-neutral flex justify-center items-center">
-      <button className="btn btn-outline btn-primary" onClick={generateUID}> Generate </button>
-      <span className="m-5"> {x} </span>
+      <button className="btn btn-outline btn-primary"> Generate </button>
 		</div>
 	)
 }

@@ -81,6 +81,9 @@ const Home = (props: IProps) => {
         throwError(msgs.roomFull);
       }else{
         if(!(userID in players)){
+          await setDoc(docRef,{
+            initialized: false
+          })
           await setDoc(docRef, { 
             players : [...players, playerData]
           })

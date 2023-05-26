@@ -1,4 +1,4 @@
-export default {
+const msgs = {
   ar: {
     roomFull: "الغرفة ممتلئة, الرجاء دخول غرفة أخرى, أو إنشاء غرفة جديدة.",
     roomNotExist: "نأسف, الغرفة تبدو غير موجودة, الرجاء تأكد من صحة الكود أو بإمكانك إنشاء غرفة  جديدة.",
@@ -30,3 +30,5 @@ export default {
     enterName: "Enter nickname"
   }
 }
+
+export default msgs

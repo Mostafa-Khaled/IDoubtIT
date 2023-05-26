@@ -4,6 +4,7 @@ const allRanks: string[] = ["A","2","3","4","5","6","7","8","9","10","K","Q","J"
 const ranks : ICard[] = [];
 const kinds : string[] = ["S","H","D","C"]
 
+
 // Users 
 
 // const createUser = (name: string) : string => {
@@ -51,9 +52,9 @@ const createCard = (rank: string, kind: string) : ICard => {
 	return card;
 } 
 
-const initializeDecks = (setCards: (cards: ICard[][]) => void) : void => {
+const initializeDecks = (userIDs: string[]) : Record<string, ICard[]> => {
 	const cards : ICard[] = [];
-	const allCards : ICard[][] = [];
+	const allCards : Record<string, ICard[]> = {};
 	for(let i = 0; i < 52; i++){
 	  cards.push(createCard(allRanks[i%13],kinds[~~(i/13)]))
 	}
@@ -63,9 +64,9 @@ const initializeDecks = (setCards: (cards: ICard[][]) => void) : void => {
 	  for(let j = 0; j < 13 ; j++){
 	    row.push(cards[i*13+j]);
 	  }
-	  allCards.push(row);
+	  allCards[userIDs[i]] = row;
 	}
-	setCards(allCards);
+	return allCards
 }
 
 export{ allRanks, ranks, timer, shuffleArray, createCard, initializeDecks }

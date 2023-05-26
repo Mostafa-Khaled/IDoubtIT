@@ -28,13 +28,13 @@ const Waiting = (props: IProps) => {
   const [userNames, loading, error] = useDocumentData(docRef);
 
   useEffect(()=>{
-    console.log(userNames, loading, error);
+    //console.log(userNames, loading, error);
   },[userNames])
 
   return (
     <>
       { !loading && !userNames && <NotFound type="Room" />}
-      { !loading && userNames && userNames.players.length === 4 && <Table /> }
+      { !loading && userNames && userNames.players.length === 4 && <Table roomID={roomID}/> }
       { !loading && userNames && userNames.players.length !== 4 && <div className="overflow-x-auto w-[50%] flex justify-center items-center">
       <table className="table w-[50%]">
         <thead>
